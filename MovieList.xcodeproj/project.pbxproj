@@ -21,6 +21,10 @@
 		62A4E38714B66660D96623FF /* Pods_MovieList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 139A5C837616B57393821C77 /* Pods_MovieList.framework */; };
 		EB2635FA2723C468007DC5C1 /* Constant+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2635F92723C468007DC5C1 /* Constant+API.swift */; };
 		EBC07B092725BC8D002DDA49 /* MovieResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC07B082725BC8D002DDA49 /* MovieResponse.swift */; };
+		EBC07B25272852DA002DDA49 /* Extension+UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC07B24272852DA002DDA49 /* Extension+UserDefaults.swift */; };
+		EBC07B2727285F8E002DDA49 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC07B2627285F8E002DDA49 /* FavoriteView.swift */; };
+		EBC07B2927286757002DDA49 /* FavoriteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC07B2827286756002DDA49 /* FavoriteViewModel.swift */; };
+		EBC07B2B27286966002DDA49 /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC07B2A27286966002DDA49 /* MovieDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +46,10 @@
 		8FC6F4EA83A4FD804A47AC4C /* Pods-MovieList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MovieList.debug.xcconfig"; path = "Target Support Files/Pods-MovieList/Pods-MovieList.debug.xcconfig"; sourceTree = "<group>"; };
 		EB2635F92723C468007DC5C1 /* Constant+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Constant+API.swift"; sourceTree = "<group>"; };
 		EBC07B082725BC8D002DDA49 /* MovieResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieResponse.swift; sourceTree = "<group>"; };
+		EBC07B24272852DA002DDA49 /* Extension+UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UserDefaults.swift"; sourceTree = "<group>"; };
+		EBC07B2627285F8E002DDA49 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		EBC07B2827286756002DDA49 /* FavoriteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteViewModel.swift; sourceTree = "<group>"; };
+		EBC07B2A27286966002DDA49 /* MovieDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +118,8 @@
 			isa = PBXGroup;
 			children = (
 				385B79532727EE5400C8B3A3 /* MainView.swift */,
+				EBC07B2627285F8E002DDA49 /* FavoriteView.swift */,
+				EBC07B2A27286966002DDA49 /* MovieDetailView.swift */,
 				385B79552727EECE00C8B3A3 /* MovieCell.swift */,
 			);
 			path = View;
@@ -120,6 +130,7 @@
 			children = (
 				385B79502727998700C8B3A3 /* Service */,
 				385B795C2728031C00C8B3A3 /* MovieViewModel.swift */,
+				EBC07B2827286756002DDA49 /* FavoriteViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -148,6 +159,7 @@
 				385B795A2727F5B400C8B3A3 /* Device.swift */,
 				385B7960272806A300C8B3A3 /* Observable.swift */,
 				385B79642728093E00C8B3A3 /* Log.swift */,
+				EBC07B24272852DA002DDA49 /* Extension+UserDefaults.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -274,13 +286,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBC07B2B27286966002DDA49 /* MovieDetailView.swift in Sources */,
 				385B7961272806A300C8B3A3 /* Observable.swift in Sources */,
 				385B79562727EECE00C8B3A3 /* MovieCell.swift in Sources */,
 				EB2635FA2723C468007DC5C1 /* Constant+API.swift in Sources */,
 				385B79652728093E00C8B3A3 /* Log.swift in Sources */,
 				385B79542727EE5400C8B3A3 /* MainView.swift in Sources */,
 				385B79522727999900C8B3A3 /* MovieAPIService.swift in Sources */,
+				EBC07B2927286757002DDA49 /* FavoriteViewModel.swift in Sources */,
 				EBC07B092725BC8D002DDA49 /* MovieResponse.swift in Sources */,
+				EBC07B25272852DA002DDA49 /* Extension+UserDefaults.swift in Sources */,
+				EBC07B2727285F8E002DDA49 /* FavoriteView.swift in Sources */,
 				385B795D2728031C00C8B3A3 /* MovieViewModel.swift in Sources */,
 				38CA342727228F7B0017E732 /* AppDelegate.swift in Sources */,
 				38CA342927228F7B0017E732 /* SceneDelegate.swift in Sources */,
@@ -431,10 +447,10 @@
 				INFOPLIST_FILE = MovieList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -461,10 +477,10 @@
 				INFOPLIST_FILE = MovieList/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

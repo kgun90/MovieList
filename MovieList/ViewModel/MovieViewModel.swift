@@ -9,18 +9,18 @@ import Foundation
 
 struct MovieViewModel {
     let movieData = Observable([MovieResponseItem]())
-    var keyword = ""
     
-    func requestMovieAPI() {
-        MovieAPIService.fetchAPI(keyword: self.keyword) { res in
+    
+    func requestMovieAPI(keyword: String, count: Int) {
+        MovieAPIService.fetchAPI(keyword: keyword, count: count) { res in
             switch res {
             case is MovieResponse:
                 let model = res as! MovieResponse
-                if let items = model.items {
-                    movieData.value = items
-                }
                
-                
+                if let items = model.items {
+                    movieData.value += items
+                }
+                    
                 print("Movie API Request Success: \(model.lastBuildDate)")
                 
             case is FailResponse:

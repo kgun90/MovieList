@@ -8,8 +8,12 @@
 import Foundation
 
 struct MovieAPIService {
-    static func fetchAPI(keyword: String, completion: @escaping(Response?) -> Void) {
-        let query = [ "query" : keyword ]
+    static func fetchAPI(keyword: String, count: Int, completion: @escaping(Response?) -> Void) {
+        let query = [
+            "query" : keyword,
+            "display" : String(count)
+        ]
+        
         API.request(query: query, type: MovieResponse.self) { res in
             completion(res)
         }
