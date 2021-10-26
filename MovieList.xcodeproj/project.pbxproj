@@ -12,10 +12,8 @@
 		385B79562727EECE00C8B3A3 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B79552727EECE00C8B3A3 /* MovieCell.swift */; };
 		385B795B2727F5B400C8B3A3 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B795A2727F5B400C8B3A3 /* Device.swift */; };
 		385B795D2728031C00C8B3A3 /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B795C2728031C00C8B3A3 /* MovieViewModel.swift */; };
-		385B795F272803C600C8B3A3 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B795E272803C600C8B3A3 /* Log.swift */; };
 		385B7961272806A300C8B3A3 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B7960272806A300C8B3A3 /* Observable.swift */; };
-		385B79632728092C00C8B3A3 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B79622728092C00C8B3A3 /* APIService.swift */; };
-		385B79652728093E00C8B3A3 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B79642728093E00C8B3A3 /* Logs.swift */; };
+		385B79652728093E00C8B3A3 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385B79642728093E00C8B3A3 /* Log.swift */; };
 		38CA342727228F7B0017E732 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA342627228F7B0017E732 /* AppDelegate.swift */; };
 		38CA342927228F7B0017E732 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA342827228F7B0017E732 /* SceneDelegate.swift */; };
 		38CA343027228F7F0017E732 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38CA342F27228F7F0017E732 /* Assets.xcassets */; };
@@ -33,10 +31,8 @@
 		385B79552727EECE00C8B3A3 /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		385B795A2727F5B400C8B3A3 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		385B795C2728031C00C8B3A3 /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
-		385B795E272803C600C8B3A3 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		385B7960272806A300C8B3A3 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
-		385B79622728092C00C8B3A3 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
-		385B79642728093E00C8B3A3 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
+		385B79642728093E00C8B3A3 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		38CA342327228F7B0017E732 /* MovieList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38CA342627228F7B0017E732 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		38CA342827228F7B0017E732 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -124,7 +120,6 @@
 			children = (
 				385B79502727998700C8B3A3 /* Service */,
 				385B795C2728031C00C8B3A3 /* MovieViewModel.swift */,
-				385B79622728092C00C8B3A3 /* APIService.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -151,9 +146,8 @@
 			children = (
 				EB2635F92723C468007DC5C1 /* Constant+API.swift */,
 				385B795A2727F5B400C8B3A3 /* Device.swift */,
-				385B795E272803C600C8B3A3 /* Log.swift */,
 				385B7960272806A300C8B3A3 /* Observable.swift */,
-				385B79642728093E00C8B3A3 /* Logs.swift */,
+				385B79642728093E00C8B3A3 /* Log.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -283,15 +277,13 @@
 				385B7961272806A300C8B3A3 /* Observable.swift in Sources */,
 				385B79562727EECE00C8B3A3 /* MovieCell.swift in Sources */,
 				EB2635FA2723C468007DC5C1 /* Constant+API.swift in Sources */,
-				385B795F272803C600C8B3A3 /* Log.swift in Sources */,
-				385B79652728093E00C8B3A3 /* Logs.swift in Sources */,
+				385B79652728093E00C8B3A3 /* Log.swift in Sources */,
 				385B79542727EE5400C8B3A3 /* MainView.swift in Sources */,
 				385B79522727999900C8B3A3 /* MovieAPIService.swift in Sources */,
 				EBC07B092725BC8D002DDA49 /* MovieResponse.swift in Sources */,
 				385B795D2728031C00C8B3A3 /* MovieViewModel.swift in Sources */,
 				38CA342727228F7B0017E732 /* AppDelegate.swift in Sources */,
 				38CA342927228F7B0017E732 /* SceneDelegate.swift in Sources */,
-				385B79632728092C00C8B3A3 /* APIService.swift in Sources */,
 				385B795B2727F5B400C8B3A3 /* Device.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

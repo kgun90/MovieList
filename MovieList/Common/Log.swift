@@ -1,5 +1,5 @@
 //
-//  Logs.swift
+//  Log.swift
 //  MovieList
 //
 //  Created by 강건 on 2021/10/26.
