@@ -8,14 +8,14 @@
 import Foundation
 
 // MARK: - MovieResponse
-struct MovieResponse: Codable {
+struct MovieResponse: Response {
     var lastBuildDate: String?
     var total, start, display: Int?
-    var items: [Item]?
+    var items: [MovieResponseItem]?
 }
 
 // MARK: - Item
-struct Item: Codable {
+struct MovieResponseItem: Codable {
     var title: String?
     var link: String?
     var image: String?
