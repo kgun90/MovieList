@@ -10,6 +10,11 @@ import Foundation
 struct MovieViewModel {
     let movieData = Observable([MovieResponseItem]())
     
+    func setUserDefaults() {
+        if UserDefaults.items == nil {
+            UserDefaults.items = [MovieResponseItem]()
+        }
+    }
     
     func requestMovieAPI(keyword: String, count: Int) {
         MovieAPIService.fetchAPI(keyword: keyword, count: count) { res in
@@ -19,7 +24,7 @@ struct MovieViewModel {
                
                 if let items = model.items {
                     movieData.value += items
-                }
+                }            
                     
                 print("Movie API Request Success: \(model.lastBuildDate)")
                 

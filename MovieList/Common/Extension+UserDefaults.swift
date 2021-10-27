@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum Initial {
+    case yes, no
+}
+
 extension UserDefaults {
     static let key = "items"
     static var items: [MovieResponseItem]? {

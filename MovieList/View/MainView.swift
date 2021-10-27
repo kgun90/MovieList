@@ -58,10 +58,10 @@ class MainView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        viewModel.requestMovieAPI(keyword: "내일", count: 10)
         view.backgroundColor = .white
-        configureNavigationBar()
+        viewModel.requestMovieAPI(keyword: "내일", count: 10)
+      
+        viewModel.setUserDefaults()
         bind()
         configureData()
         configureUI()
@@ -71,6 +71,11 @@ class MainView: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+    }
+    
+    func configureData() {
+        movieTableView.dataSource = self
+        movieTableView.delegate = self
     }
     
     func configureUI() {
@@ -91,23 +96,16 @@ class MainView: UIViewController {
         }
     }
     
-    func configureData() {
-        movieTableView.dataSource = self
-        movieTableView.delegate = self
-    }
-    
     @objc
     func actionFavorite() {
-        Log.any("favorite")
         let vc = FavoriteView()
-        self.present(vc, animated: true, completion: nil)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    func bind() {
-        viewModel.movieData.bind { [weak self] items in
-            self?.data = items
-            self?.reloadTableView()
-        }
+    func moveToMoveDetail(data: MovieResponseItem) {
+        let vc = MovieDetailView()
+        vc.data = data
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func reloadTableView() {
@@ -115,24 +113,12 @@ class MainView: UIViewController {
             self.movieTableView.reloadData()
         }
     }
-    func moveToMoveDetail(data: MovieResponseItem) {
-        let vc = MovieDetailView()
-        vc.movieData = data
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
     
-    func configureNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .clear
-        
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        
-        navigationController?.navigationBar.tintColor = .black
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.isNavigationBarHidden = true
-        navigationItem.backButtonTitle = ""
+    func bind() {
+        viewModel.movieData.bind { [weak self] items in
+            self?.data = items
+            self?.reloadTableView()
+        }
     }
 }
 
@@ -144,13 +130,14 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.movieTableView.dequeueReusableCell(withIdentifier: "movieCell", for: indexPath as IndexPath) as! MovieCell
         cell.movieData = data[indexPath.row]
-
+        cell.keyword = "내일"
         return cell
     }
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        moveToMoveDetail(data: data[indexPath.row])
+        self.moveToMoveDetail(data: data[indexPath.row])
     }
 }

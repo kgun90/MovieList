@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import SnapKit
 
 class FavoriteView: UIViewController {
     var viewModel = FavoriteViewModel()
     
-    lazy var background: UIView = {
+    lazy var titleView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.addSubview(dismissButton)
@@ -26,6 +27,7 @@ class FavoriteView: UIViewController {
         }
         return view
     }()
+    
     lazy var dismissButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(systemName: "xmark"), for: .normal)
@@ -45,8 +47,7 @@ class FavoriteView: UIViewController {
     lazy var favoriteTableView: UITableView = {
         let tv = UITableView()
         tv.backgroundColor = .white
-        tv.translatesAutoresizingMaskIntoConstraints = false
-        tv.register(MovieCell.self, forCellReuseIdentifier: "movieCell")
+        tv.register(MovieCell.self, forCellReuseIdentifier: "cell")
         return tv
     }()
     
@@ -57,9 +58,10 @@ class FavoriteView: UIViewController {
         view.backgroundColor = .white
         
         viewModel.getFavoriteData()
-        bind()
+       
         configureData()
         configureUI()
+        bind()
     }
 
     func configureData() {
@@ -68,23 +70,33 @@ class FavoriteView: UIViewController {
     }
     
     func configureUI() {
-        view.addSubview(background)
-       
         view.addSubview(favoriteTableView)
+        view.addSubview(titleView)
+//        view.addSubview(favoriteTableView)
         
-        background.snp.makeConstraints {
+        titleView.snp.makeConstraints {
             $0.width.equalToSuperview()
             $0.height.equalTo(Device.navigationBarHeight)
-            $0.centerX.top.equalToSuperview()
-        }
-        
-      
-        favoriteTableView.snp.makeConstraints {
-            $0.width.equalToSuperview()
-            $0.top.equalToSuperview().offset(Device.navigationBarHeight)
-            $0.bottom.equalToSuperview()
+            $0.top.equalToSuperview().offset(Device.statusBarHeight)
             $0.centerX.equalToSuperview()
         }
+        
+        favoriteTableView.snp.makeConstraints {
+            $0.width.equalTo(Device.screenWidth)
+            $0.top.equalTo(titleView.snp.bottom)
+            $0.bottom.equalToSuperview()
+        }
+    }
+    
+    @objc
+    func dismissAction() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func moveToMoveDetail(data: MovieResponseItem) {
+        let vc = MovieDetailView()
+        vc.data = data
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func bind() {
@@ -94,11 +106,6 @@ class FavoriteView: UIViewController {
         }
     }
     
-    @objc
-    func dismissAction() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     func reloadTableView() {
         DispatchQueue.main.async {
             self.favoriteTableView.reloadData()
@@ -106,16 +113,22 @@ class FavoriteView: UIViewController {
     }
 }
 
-extension FavoriteView: UITableViewDataSource, UITableViewDelegate{
+extension FavoriteView: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let items = UserDefaults.items else { return 0 }
-        return items.count
+        return data.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.favoriteTableView.dequeueReusableCell(withIdentifier: "movieCell", for: indexPath as IndexPath) as! MovieCell
-        cell.movieData = UserDefaults.items![indexPath.row]
+        let cell = self.favoriteTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath) as! MovieCell
+        cell.movieData = data[indexPath.row]
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
     }
 }

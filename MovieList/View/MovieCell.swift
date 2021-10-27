@@ -68,10 +68,14 @@ class MovieCell: UITableViewCell {
     var link = ""
     var data: MovieResponseItem?
     
+    var keyword: String? {
+        didSet { setTitle() }
+    }
+    
     var movieData: MovieResponseItem? {
         didSet { configureData() }
     }
-    
+        
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureUI()
@@ -80,20 +84,11 @@ class MovieCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    @objc
-    func actionFavorite(_ sender: UIButton) {
-        guard let data = self.data else { return }
-        if Favorite.checkItem(link: link) {
-            Favorite.removeItem(item: data)
-        } else {
-            Favorite.storeItem(item: data)
-        }
-        reloadFavorite()
-    }
-        
+
     func configureData() {
         guard let data = movieData else { return }
-        
+       
+
         let url = URL(string: data.image ?? "")
     
         if data.image == "" {
@@ -101,19 +96,41 @@ class MovieCell: UITableViewCell {
         }
 
         posterImage.kf.setImage(with: url, placeholder: placeholder)
-        titleLabel.text = stringReplace(text: data.title)
-        directorLabel.text = "감독: \(stringChange(text: data.director))"
-        actorLabel.text = "출연: \(stringChange(text: data.actor))"
+        
+        directorLabel.text = "감독: \(data.director?.replaceBar() ?? "")"
+        actorLabel.text = "출연: \(data.actor?.replaceBar() ?? "")"
         userRatingLabel.text = "평점: \(data.userRating ?? "")"
         
         link = data.link ?? ""
         self.data = data
+        setTitle()
         reloadFavorite()
     }
+     
+    func setTitle() {
+        let title = self.data?.title?.removeTag()
+        titleLabel.attributedText = title?.boldString(boldString: keyword ?? "")
+    }
+    
+    @objc
+    func actionFavorite(_ sender: UIButton) {
+        Log.any("favorite: \(link)")
+        
+        guard let data = self.data else { return }
+        
+        if Favorite.checkItem(link: link) {
+            Favorite.removeItem(item: data)
+        } else {
+            Favorite.storeItem(item: data)
+        }
+        
+        reloadFavorite()
+    }
+        
     
     func reloadFavorite() {
-        guard let data = self.data else { return }
-        if Favorite.checkItem(link: data.link!) {
+        Log.any("link \(Favorite.checkItem(link: link))")
+        if Favorite.checkItem(link: link) {
             favoriteButton.tintColor = .systemYellow
         } else {
             favoriteButton.tintColor = .systemGray
@@ -168,24 +185,8 @@ class MovieCell: UITableViewCell {
         favoriteButton.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(Device.widthScale(-10))
             $0.top.equalToSuperview().offset(Device.heightScale(10))
-            $0.width.equalTo(Device.widthScale(15))
-            $0.height.equalTo(Device.heightScale(15))
+            $0.width.equalTo(Device.widthScale(20))
+            $0.height.equalTo(Device.heightScale(20))
         }
-    }
-    
-    func stringChange(text: String?) -> String {
-        guard let text = text else { return "" }
-        let removeLast = text.dropLast()
-        return removeLast.replacingOccurrences(of: "|", with: ", ")
-    }
-    
-    func stringReplace(text: String?) -> String {
-        guard let text = text else { return "" }
-        let first = "<b>"
-        let last = "</b>"
-        
-        let removeFirst = text.replacingOccurrences(of: first, with: "")
-        return removeFirst.replacingOccurrences(of: last, with: " ")
-        
     }
 }
