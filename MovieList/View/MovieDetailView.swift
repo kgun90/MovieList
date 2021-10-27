@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Kingfisher
+import WebKit
 
 class MovieDetailView: UIViewController {
     var data: MovieResponseItem?
@@ -95,6 +96,18 @@ class MovieDetailView: UIViewController {
         return btn
     }()
     
+    lazy var webBackground: UIView = {
+        let view = UIView()
+        view.backgroundColor = .green
+        return view
+    }()
+    
+    lazy var webView: WKWebView = {
+        let wv = WKWebView()
+        wv.frame = CGRect(x: 0, y: 0, width: Device.screenWidth, height: Device.screenHeight - Device.topHeight)
+        return wv
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -132,13 +145,13 @@ class MovieDetailView: UIViewController {
     func configureData() {
         guard let data = self.data else { return }
 
-        let url = URL(string: data.image ?? "")
+        let imagURL = URL(string: data.image ?? "")
     
         if data.image == "" {
             posterImage.contentMode = .scaleAspectFit
         }
 
-        posterImage.kf.setImage(with: url, placeholder: placeholder)
+        posterImage.kf.setImage(with: imagURL, placeholder: placeholder)
         
         titleLabel.text = data.title?.removeTag() ?? ""
         directorLabel.text = "감독: \(data.director?.replaceBar() ?? "")"
@@ -146,11 +159,16 @@ class MovieDetailView: UIViewController {
         userRatingLabel.text = "평점: \(data.userRating ?? "")"
         
         reloadFavorite()
+        guard let webURL = URL(string: data.link ?? "") else { return }
+        webView.load(URLRequest(url: webURL))
+        webView.allowsBackForwardNavigationGestures = true
     }
     
     func configureUI() {
         view.addSubview(titleView)
         view.addSubview(movieInfoView)
+        view.addSubview(webBackground)
+        webBackground.addSubview(webView)
         
         movieInfoView.addSubview(posterImage)
         movieInfoView.addSubview(directorLabel)
@@ -199,6 +217,14 @@ class MovieDetailView: UIViewController {
             $0.top.equalToSuperview().offset(Device.heightScale(10))
             $0.width.equalTo(Device.widthScale(20))
             $0.height.equalTo(Device.heightScale(20))
+        }
+        webBackground.snp.makeConstraints {
+            $0.width.equalToSuperview()
+            $0.top.equalTo(movieInfoView.snp.bottom)
+            $0.bottom.equalToSuperview()
+        }
+        webView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
 }
