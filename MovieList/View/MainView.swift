@@ -12,6 +12,7 @@ class MainView: UIViewController {
     //    MARK: - Properties
     var viewModel = MovieViewModel()
     private var data = [MovieResponseItem]()
+    private var total = 0
     
     lazy var titleView: UIView = {
         let view = UIView()
@@ -24,7 +25,7 @@ class MainView: UIViewController {
         }
         favoriteButton.snp.makeConstraints {
             $0.width.equalTo(Device.widthScale(80))
-            $0.height.equalTo(Device.heightScale(40))
+            $0.height.equalTo(Device.heightScale(30))
             $0.trailing.equalToSuperview().offset(Device.widthScale(-10))
             $0.centerY.equalToSuperview()
         }
@@ -41,9 +42,21 @@ class MainView: UIViewController {
     
     lazy var favoriteButton: UIButton = {
         let btn = UIButton()
+        
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        btn.setImage(UIImage(systemName: "star.fill"), for: .normal)
+        btn.tintColor = .systemYellow
+        btn.imageView?.contentMode = .scaleAspectFit
+        
         btn.setTitle("즐겨찾기", for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16)
+        btn.titleLabel?.font = .systemFont(ofSize: 14)
         btn.setTitleColor(.black, for: .normal)
+        
+        btn.layer.masksToBounds = true
+        btn.layer.borderWidth = 0.5
+        btn.layer.borderColor = UIColor.systemGray4.cgColor
+    
+        btn.imageEdgeInsets.right = 10
         btn.addTarget(self, action: #selector(actionFavorite), for: .touchUpInside)
         return btn
     }()
@@ -53,7 +66,7 @@ class MainView: UIViewController {
         tf.borderStyle = .line
         tf.clearButtonMode = .whileEditing
         tf.layer.masksToBounds = true
-        tf.layer.borderColor = UIColor.lightGray.cgColor
+        tf.layer.borderColor = UIColor.systemGray4.cgColor
         tf.layer.borderWidth = 1
         tf.layer.cornerRadius = 5
         tf.autocorrectionType = .no
@@ -73,7 +86,7 @@ class MainView: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         viewModel.requestMovieAPI(count: 10)
-      
+        
         viewModel.setUserDefaults()
         bind()
         configureData()
@@ -84,7 +97,6 @@ class MainView: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
         reloadTableView()
-        
     }
     
     //    MARK: - Selectors
@@ -141,6 +153,9 @@ class MainView: UIViewController {
             self?.data = items
             self?.reloadTableView()
         }
+        viewModel.itemTotal.bind { [weak self] total in
+            self?.total = total
+        }
     }
     
     func reloadTableView() {
@@ -149,7 +164,9 @@ class MainView: UIViewController {
         }
     }
     
-    func dismissKeyboard() {
+
+    // 키보드 영역 이외 터치시 키보드 해제
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.endEditing))
         tap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(tap)
@@ -158,10 +175,6 @@ class MainView: UIViewController {
     @objc func endEditing() {
         self.view.endEditing(false)
     }
-    // 키보드 영역 이외 터치시 키보드 해제
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.dismissKeyboard()
-    }
 }
 
 extension MainView: UITextFieldDelegate {
@@ -169,11 +182,13 @@ extension MainView: UITextFieldDelegate {
         viewModel.keyword = textField.text!
         viewModel.requestMovieAPI(count: 10)
         viewModel.movieData.value = [MovieResponseItem]()
-        dismissKeyboard()        
+        endEditing()
+        
         return true
     }
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         viewModel.movieData.value = [MovieResponseItem]()
+        
         return true
     }
 }
@@ -187,6 +202,10 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
         let cell = self.movieTableView.dequeueReusableCell(withIdentifier: "movieCell", for: indexPath as IndexPath) as! MovieCell
         cell.keyword = viewModel.keyword
         cell.movieData = data[indexPath.row]
+        
+        if indexPath.row == data.count - 1 && data.count < total {
+            viewModel.requestMovieAPI(count: 10, from: data.count + 1)
+        }
         
         return cell
     }

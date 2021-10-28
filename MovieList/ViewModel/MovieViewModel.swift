@@ -9,6 +9,7 @@ import Foundation
 
 struct MovieViewModel {
     let movieData = Observable([MovieResponseItem]())
+    let itemTotal = Observable(0)
     var keyword = ""
     
     func setUserDefaults() {
@@ -17,8 +18,8 @@ struct MovieViewModel {
         }
     }
 
-    func requestMovieAPI(count: Int) {
-        MovieAPIService.fetchAPI(keyword: keyword, count: count) { res in
+    func requestMovieAPI(count: Int, from start: Int = 1) {
+        MovieAPIService.fetchAPI(keyword: keyword, count: count, start: start) { res in
             switch res {
             case is MovieResponse:
                 let model = res as! MovieResponse
@@ -26,12 +27,13 @@ struct MovieViewModel {
                 if let items = model.items {
                     movieData.value += items
                 }            
-                    
-                print("Movie API Request Success: \(model.lastBuildDate)")
+                itemTotal.value = model.total ?? 0
+                
+                print("Movie API Request success: \(model.display)")
                 
             case is FailResponse:
                 let fail = res as! FailResponse
-                print("Movie API Request Fail: \(fail.message)")
+                print("Movie API Request Fail: \(fail.errorMessage)")
                 
             default:
                 print("Movie API Request Network Failure")

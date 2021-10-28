@@ -11,6 +11,7 @@ import Kingfisher
 
 class MovieCell: UITableViewCell {
     var viewModel = FavoriteViewModel()
+    
     lazy var background: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -130,7 +131,7 @@ class MovieCell: UITableViewCell {
         if Favorite.checkItem(link: link) {
             favoriteButton.tintColor = .systemYellow
         } else {
-            favoriteButton.tintColor = .systemGray
+            favoriteButton.tintColor = .lightGray
         }
     }
     

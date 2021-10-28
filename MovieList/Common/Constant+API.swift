@@ -10,13 +10,11 @@ import Alamofire
 
 protocol Response: Codable { }
 
+// MARK: - FailResponse
 struct FailResponse: Response {
-    var code: Int
-    var message: String
-    var method: String
-    var url: String
+    var errorMessage, errorCode: String
 }
-
+//    MARK: - API에 사용하는 요소들
 struct API {
     static let baseURL = "https://openapi.naver.com"
     static let headers: HTTPHeaders = [
@@ -48,7 +46,7 @@ struct API {
             return .fail
         }
     }
-    
+//    API Request 동작을 간소화 시켜 Response를 Parsing 하고 completion으로 반환
     static func request<R: Response> (query: [String: String]? = nil, type: R.Type, completion: @escaping (Response?) -> Void) {
         var requestURL = URLComponents(string: API.baseURL)!
         

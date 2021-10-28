@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+//    MARK: - ViewModel 에서 사용하는 Observable class
 final class Observable<T> {
     //    모든 Observable 은 값이 변경되었을 때 통지해 주는 Listener를 갖는다.
     typealias Listener = (T) -> Void

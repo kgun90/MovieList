@@ -7,13 +7,8 @@
 
 import Foundation
 
-public class Log{
-    static func e(_ message: String, file: String = #file, line: Int = #line) {
-        let file = (file as NSString).lastPathComponent
-        
-        print("\(Date()) : \(message) (at \(file):\(line))")
-    }
-    
+//    MARK: - Log 확인할때 사용
+public class Log {
     static func any(_ message: Any, file: String = #file, line: Int = #line) {
         let file = (file as NSString).lastPathComponent
         

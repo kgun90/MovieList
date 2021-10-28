@@ -11,6 +11,7 @@ import Kingfisher
 import WebKit
 
 class MovieDetailView: UIViewController, WKUIDelegate {
+    //    MARK: - Properties
     var data: MovieResponseItem?
     
     lazy var titleView: UIView = {
@@ -22,7 +23,7 @@ class MovieDetailView: UIViewController, WKUIDelegate {
         dismissButton.snp.makeConstraints {
             $0.width.equalTo(Device.widthScale(30))
             $0.height.equalTo(Device.heightScale(30))
-            $0.leading.equalToSuperview().offset(Device.widthScale(20))
+            $0.leading.equalToSuperview().offset(Device.widthScale(10))
             $0.centerY.equalToSuperview()
         }
         titleLabel.snp.makeConstraints {
@@ -98,18 +99,24 @@ class MovieDetailView: UIViewController, WKUIDelegate {
     
     lazy var webBackground: UIView = {
         let view = UIView()
-        view.backgroundColor = .green
+        view.backgroundColor = .white
         return view
     }()
     
     var webView = WKWebView()
 
+    //    MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         webBackground = webView
         configureData()
         configureUI()
+    }
+    //    MARK: - Selector
+    @objc
+    func dismissAction() {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc
@@ -129,13 +136,9 @@ class MovieDetailView: UIViewController, WKUIDelegate {
         if Favorite.checkItem(link: data.link ?? "") {
             favoriteButton.tintColor = .systemYellow
         } else {
-            favoriteButton.tintColor = .systemGray
+            favoriteButton.tintColor = .lightGray
         }
-    }
-    @objc
-    func dismissAction() {
-        self.navigationController?.popViewController(animated: true)
-    }
+    }       
     
     func configureData() {
         guard let data = self.data else { return }
@@ -154,7 +157,7 @@ class MovieDetailView: UIViewController, WKUIDelegate {
         userRatingLabel.text = "평점: \(data.userRating ?? "")"
         
         reloadFavorite()
-        Log.any("\(data.link)")
+        // WebView 구현
         if let webURL = URL(string: data.link ?? ""){
             let request = URLRequest(url: webURL)
             webView.load(request)

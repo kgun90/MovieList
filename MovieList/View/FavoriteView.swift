@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 class FavoriteView: UIViewController {
+    //    MARK: - Properties
     var viewModel = FavoriteViewModel()
     private var data = [MovieResponseItem]()
     
@@ -53,7 +54,7 @@ class FavoriteView: UIViewController {
         return tv
     }()
   
-    
+    //    MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -64,13 +65,20 @@ class FavoriteView: UIViewController {
         configureUI()
         
     }
+    //    영화 상세정보 이동 후 즐겨찾기 해제시 목록에서 삭제 후 다시 로딩하도록 한다.
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.getFavoriteData()
         reloadTableView()
-        
     }
     
+    //    MARK: - Selector
+    @objc
+    func dismissAction() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    //    MARK: - Helper
     func configureData() {
         favoriteTableView.dataSource = self
         favoriteTableView.delegate = self
@@ -94,11 +102,7 @@ class FavoriteView: UIViewController {
         }
     }
     
-    @objc
-    func dismissAction() {
-        self.navigationController?.popViewController(animated: true)
-    }
-    
+   
     func moveToMoveDetail(data: MovieResponseItem) {
         let vc = MovieDetailView()
         vc.data = data
@@ -133,8 +137,7 @@ extension FavoriteView: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Device.heightScale(104)
-    }
-    
+    }    
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.moveToMoveDetail(data: data[indexPath.row])
