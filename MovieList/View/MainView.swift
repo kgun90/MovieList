@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 class MainView: UIViewController {
+    //    MARK: - Properties
     var viewModel = MovieViewModel()
-    
     private var data = [MovieResponseItem]()
     
     lazy var titleView: UIView = {
@@ -48,6 +48,18 @@ class MainView: UIViewController {
         return btn
     }()
     
+    lazy var searchTextField: UITextField = {
+        let tf = UITextField()
+        tf.borderStyle = .line
+        tf.clearButtonMode = .whileEditing
+        tf.layer.masksToBounds = true
+        tf.layer.borderColor = UIColor.lightGray.cgColor
+        tf.layer.borderWidth = 1
+        tf.layer.cornerRadius = 5
+        tf.autocorrectionType = .no
+        return tf
+    }()
+    
     lazy var movieTableView: UITableView = {
         let tv = UITableView()
         tv.backgroundColor = .white
@@ -55,31 +67,43 @@ class MainView: UIViewController {
         tv.register(MovieCell.self, forCellReuseIdentifier: "movieCell")
         return tv
     }()
-    
+
+    //    MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        viewModel.requestMovieAPI(keyword: "내일", count: 10)
+        viewModel.requestMovieAPI(count: 10)
       
         viewModel.setUserDefaults()
         bind()
         configureData()
         configureUI()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+        reloadTableView()
+        
     }
     
+    //    MARK: - Selectors
+    @objc
+    func actionFavorite() {
+        let vc = FavoriteView()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    //    MARK: - Helper
     func configureData() {
+        searchTextField.delegate = self
         movieTableView.dataSource = self
         movieTableView.delegate = self
     }
     
     func configureUI() {
         view.addSubview(titleView)
+        view.addSubview(searchTextField)
         view.addSubview(movieTableView)
         
         titleView.snp.makeConstraints {
@@ -88,24 +112,35 @@ class MainView: UIViewController {
             $0.top.equalToSuperview().offset(Device.statusBarHeight)
             $0.centerX.equalToSuperview()
         }
-
+        
+        searchTextField.snp.makeConstraints {
+            $0.leading.equalToSuperview().offset(Device.widthScale(10))
+            $0.trailing.equalToSuperview().offset(Device.widthScale(-10))
+            $0.height.equalTo(Device.heightScale(30))
+            $0.top.equalTo(titleView.snp.bottom)
+        }
+        
         movieTableView.snp.makeConstraints {
             $0.width.equalTo(Device.screenWidth)
-            $0.top.equalTo(titleView.snp.bottom)
+            $0.top.equalTo(searchTextField.snp.bottom)
             $0.bottom.equalToSuperview()
         }
     }
     
-    @objc
-    func actionFavorite() {
-        let vc = FavoriteView()
-        self.navigationController?.pushViewController(vc, animated: true)
-    }
     
     func moveToMoveDetail(data: MovieResponseItem) {
         let vc = MovieDetailView()
         vc.data = data
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+
+    
+    func bind() {
+        viewModel.movieData.bind { [weak self] items in
+            self?.data = items
+            self?.reloadTableView()
+        }
     }
     
     func reloadTableView() {
@@ -114,11 +149,32 @@ class MainView: UIViewController {
         }
     }
     
-    func bind() {
-        viewModel.movieData.bind { [weak self] items in
-            self?.data = items
-            self?.reloadTableView()
-        }
+    func dismissKeyboard() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.endEditing))
+        tap.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tap)
+    }
+    
+    @objc func endEditing() {
+        self.view.endEditing(false)
+    }
+    // 키보드 영역 이외 터치시 키보드 해제
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.dismissKeyboard()
+    }
+}
+
+extension MainView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        viewModel.keyword = textField.text!
+        viewModel.requestMovieAPI(count: 10)
+        viewModel.movieData.value = [MovieResponseItem]()
+        dismissKeyboard()        
+        return true
+    }
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        viewModel.movieData.value = [MovieResponseItem]()
+        return true
     }
 }
 
@@ -129,13 +185,16 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.movieTableView.dequeueReusableCell(withIdentifier: "movieCell", for: indexPath as IndexPath) as! MovieCell
+        cell.keyword = viewModel.keyword
         cell.movieData = data[indexPath.row]
-        cell.keyword = "내일"
+        
         return cell
     }
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return Device.heightScale(104)
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.moveToMoveDetail(data: data[indexPath.row])

@@ -11,7 +11,6 @@ struct FavoriteViewModel {
     let favoriteData = Observable([MovieResponseItem]())
         
     func getFavoriteData() {
-        guard let items = UserDefaults.items else { return }
-        favoriteData.value = items
+        favoriteData.value = UserDefaults.items!
     }
 }

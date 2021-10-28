@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+//    MARK: - Custom Navigation 사용시 Swipe로 뒤로가는 동작이 안되는 문제를 위한 Extension
 extension UINavigationController: ObservableObject, UIGestureRecognizerDelegate {
     override open func viewDidLoad() {
         super.viewDidLoad()

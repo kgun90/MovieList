@@ -30,11 +30,7 @@ extension UserDefaults {
 
 struct Favorite {
     static func checkItem(link: String) -> Bool {
-        let items = UserDefaults.items
-        let result = items?.contains(where: { item in
-            item.link == link
-        })
-        return result ?? false
+        return UserDefaults.items!.contains { $0.link == link }
     }
     
     static func storeItem(item: MovieResponseItem) {
@@ -44,10 +40,9 @@ struct Favorite {
     }
     
     static func removeItem(item: MovieResponseItem) {
-        let items = UserDefaults.items
+        guard let items = UserDefaults.items else { return}
         
-        UserDefaults.items = items?.filter{ $0.link != item.link }
-    
+        UserDefaults.items = items.filter{ $0.link != item.link }
     }
     
 }

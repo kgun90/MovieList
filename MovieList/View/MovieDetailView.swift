@@ -10,7 +10,7 @@ import SnapKit
 import Kingfisher
 import WebKit
 
-class MovieDetailView: UIViewController {
+class MovieDetailView: UIViewController, WKUIDelegate {
     var data: MovieResponseItem?
     
     lazy var titleView: UIView = {
@@ -102,16 +102,12 @@ class MovieDetailView: UIViewController {
         return view
     }()
     
-    lazy var webView: WKWebView = {
-        let wv = WKWebView()
-        wv.frame = CGRect(x: 0, y: 0, width: Device.screenWidth, height: Device.screenHeight - Device.topHeight)
-        return wv
-    }()
-    
+    var webView = WKWebView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
+        webBackground = webView
         configureData()
         configureUI()
     }
@@ -125,7 +121,6 @@ class MovieDetailView: UIViewController {
         } else {
             Favorite.storeItem(item: data)
         }
-        
         reloadFavorite()
     }
         
@@ -159,17 +154,17 @@ class MovieDetailView: UIViewController {
         userRatingLabel.text = "평점: \(data.userRating ?? "")"
         
         reloadFavorite()
-        guard let webURL = URL(string: data.link ?? "") else { return }
-        webView.load(URLRequest(url: webURL))
-        webView.allowsBackForwardNavigationGestures = true
+        Log.any("\(data.link)")
+        if let webURL = URL(string: data.link ?? ""){
+            let request = URLRequest(url: webURL)
+            webView.load(request)
+        }
     }
     
     func configureUI() {
         view.addSubview(titleView)
-        view.addSubview(movieInfoView)
+        view.addSubview(movieInfoView)    
         view.addSubview(webBackground)
-        webBackground.addSubview(webView)
-        
         movieInfoView.addSubview(posterImage)
         movieInfoView.addSubview(directorLabel)
         movieInfoView.addSubview(actorLabel)
@@ -222,9 +217,6 @@ class MovieDetailView: UIViewController {
             $0.width.equalToSuperview()
             $0.top.equalTo(movieInfoView.snp.bottom)
             $0.bottom.equalToSuperview()
-        }
-        webView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
         }
     }
 }

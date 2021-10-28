@@ -9,14 +9,15 @@ import Foundation
 
 struct MovieViewModel {
     let movieData = Observable([MovieResponseItem]())
+    var keyword = ""
     
     func setUserDefaults() {
         if UserDefaults.items == nil {
             UserDefaults.items = [MovieResponseItem]()
         }
     }
-    
-    func requestMovieAPI(keyword: String, count: Int) {
+
+    func requestMovieAPI(count: Int) {
         MovieAPIService.fetchAPI(keyword: keyword, count: count) { res in
             switch res {
             case is MovieResponse:

@@ -10,6 +10,7 @@ import SnapKit
 
 class FavoriteView: UIViewController {
     var viewModel = FavoriteViewModel()
+    private var data = [MovieResponseItem]()
     
     lazy var titleView: UIView = {
         let view = UIView()
@@ -47,33 +48,38 @@ class FavoriteView: UIViewController {
     lazy var favoriteTableView: UITableView = {
         let tv = UITableView()
         tv.backgroundColor = .white
+        tv.translatesAutoresizingMaskIntoConstraints = false
         tv.register(MovieCell.self, forCellReuseIdentifier: "cell")
         return tv
     }()
-    
-    private var data = [MovieResponseItem]()
+  
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
         viewModel.getFavoriteData()
-       
+        bind()
         configureData()
         configureUI()
-        bind()
+        
     }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.getFavoriteData()
+        reloadTableView()
+        
+    }
+    
     func configureData() {
         favoriteTableView.dataSource = self
-        favoriteTableView.dataSource = self
+        favoriteTableView.delegate = self
     }
     
     func configureUI() {
-        view.addSubview(favoriteTableView)
         view.addSubview(titleView)
-//        view.addSubview(favoriteTableView)
-        
+        view.addSubview(favoriteTableView)
+       
         titleView.snp.makeConstraints {
             $0.width.equalToSuperview()
             $0.height.equalTo(Device.navigationBarHeight)
@@ -125,10 +131,12 @@ extension FavoriteView: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return Device.heightScale(104)
     }
+    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        self.moveToMoveDetail(data: data[indexPath.row])
     }
 }

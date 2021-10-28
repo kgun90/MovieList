@@ -10,6 +10,7 @@ import SnapKit
 import Kingfisher
 
 class MovieCell: UITableViewCell {
+    var viewModel = FavoriteViewModel()
     lazy var background: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -68,9 +69,7 @@ class MovieCell: UITableViewCell {
     var link = ""
     var data: MovieResponseItem?
     
-    var keyword: String? {
-        didSet { setTitle() }
-    }
+    var keyword: String?
     
     var movieData: MovieResponseItem? {
         didSet { configureData() }
@@ -87,7 +86,6 @@ class MovieCell: UITableViewCell {
 
     func configureData() {
         guard let data = movieData else { return }
-       
 
         let url = URL(string: data.image ?? "")
     
@@ -96,26 +94,27 @@ class MovieCell: UITableViewCell {
         }
 
         posterImage.kf.setImage(with: url, placeholder: placeholder)
-        
-        directorLabel.text = "감독: \(data.director?.replaceBar() ?? "")"
-        actorLabel.text = "출연: \(data.actor?.replaceBar() ?? "")"
+        titleLabel.attributedText = setText(text: data.title ?? "")
+        directorLabel.attributedText = setText(text: "감독: \(data.director ?? "")")
+        actorLabel.attributedText = setText(text: "출연: \(data.actor ?? "")")
         userRatingLabel.text = "평점: \(data.userRating ?? "")"
         
         link = data.link ?? ""
         self.data = data
-        setTitle()
+      
         reloadFavorite()
     }
      
-    func setTitle() {
-        let title = self.data?.title?.removeTag()
-        titleLabel.attributedText = title?.boldString(boldString: keyword ?? "")
+    func setText(text: String) -> NSAttributedString {
+        var result = text.removeTag()
+        if result.contains("|") {
+            result = result.replaceBar()
+        }        
+        return result.boldString(boldString: keyword ?? "")
     }
     
     @objc
     func actionFavorite(_ sender: UIButton) {
-        Log.any("favorite: \(link)")
-        
         guard let data = self.data else { return }
         
         if Favorite.checkItem(link: link) {
@@ -126,10 +125,8 @@ class MovieCell: UITableViewCell {
         
         reloadFavorite()
     }
-        
     
     func reloadFavorite() {
-        Log.any("link \(Favorite.checkItem(link: link))")
         if Favorite.checkItem(link: link) {
             favoriteButton.tintColor = .systemYellow
         } else {
@@ -147,15 +144,12 @@ class MovieCell: UITableViewCell {
         background.addSubview(userRatingLabel)
         background.addSubview(favoriteButton)
         
-        contentView.snp.makeConstraints {
-            $0.width.equalTo(Device.screenWidth)
-            $0.height.equalTo(Device.heightScale(104))
-        }
 
         background.snp.makeConstraints {
-            $0.width.equalToSuperview()
             $0.height.equalTo(Device.heightScale(104))
+            $0.edges.equalToSuperview()
         }
+        
         posterImage.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(Device.widthScale(10))
             $0.centerY.equalToSuperview()
@@ -164,19 +158,21 @@ class MovieCell: UITableViewCell {
         }
         
         titleLabel.snp.makeConstraints {
+            $0.width.equalTo(Device.screenWidth - Device.widthScale(100))
             $0.leading.equalTo(posterImage.snp.trailing).offset(Device.widthScale(10))
             $0.top.equalTo(posterImage.snp.top).offset(Device.heightScale(10))
         }
         
         directorLabel.snp.makeConstraints {
+            $0.width.equalTo(Device.screenWidth - Device.widthScale(100))
             $0.leading.equalTo(posterImage.snp.trailing).offset(Device.widthScale(10))
-            $0.top.equalTo(titleLabel.snp.bottom).offset(Device.heightScale(10))
-        }
+            $0.top.equalTo(titleLabel.snp.bottom).offset(Device.heightScale(10))        }
         
         actorLabel.snp.makeConstraints {
+            $0.width.equalTo(Device.screenWidth - Device.widthScale(100))
             $0.leading.equalTo(posterImage.snp.trailing).offset(Device.widthScale(10))
             $0.top.equalTo(directorLabel.snp.bottom).offset(Device.heightScale(10))
-            $0.width.equalTo(Device.screenWidth - Device.widthScale(100))
+            
         }
         userRatingLabel.snp.makeConstraints {
             $0.leading.equalTo(posterImage.snp.trailing).offset(Device.widthScale(10))
